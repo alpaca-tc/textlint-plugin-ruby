@@ -1,0 +1,9 @@
+{
+  "name": "textlint-plugin-ruby",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "repository": "https://github.com/alpaca-tc/textlint-plugin-ruby.git",
+  "author": "alpaca-tc <alpaca-tc@alpaca.tc>",
+  "license": "MIT",
+  "private": true
+}
