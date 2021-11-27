@@ -1,11 +1,15 @@
-// import { ASTNodeTypes } from '@textlint/ast-node-types';
 import type {
   AnyTxtNode
 } from '@textlint/ast-node-types';
 
-import tmp from 'tmp'
-import fs from "fs"
+import { tmpNameSync } from 'tmp'
+import { writeFileSync } from "fs"
 import { spawnSync } from "child_process"
+
+const die = (error: Error): void => {
+  console.error(error)
+  process.exit(1)
+}
 
 const execTextlintRuby = (execPath: string, text: string, filePath: string | undefined): any => {
   let path: string;
@@ -13,18 +17,32 @@ const execTextlintRuby = (execPath: string, text: string, filePath: string | und
   if (filePath) {
     path = filePath
   } else {
-    path = tmp.tmpNameSync({ postfix: '.rb' }).toString();
-    fs.writeFileSync(path, text)
+    path = tmpNameSync({ postfix: '.rb' }).toString();
+    writeFileSync(path, text)
   }
 
-  const spawn = spawnSync(
-    execPath,
-    [path]
-  )
+  try {
+    // Parse ruby source code with textlint-ruby
+    const spawn = spawnSync(
+      execPath,
+      [path]
+    )
 
-  return JSON.parse(spawn.stdout.toString())
+    if (spawn.error) {
+      die(spawn.error!)
+    }
+
+    const json = spawn.stdout.toString()
+    return JSON.parse(json) as AnyTxtNode
+  } catch(error) {
+    if (error instanceof Error) {
+      die(error)
+    } else {
+      die(new Error(String(error)))
+    }
+  }
 }
 
-export const rubyToAST = (text: string, filePath: string | undefined): AnyTxtNode => {
-  return execTextlintRuby(text, filePath) as AnyTxtNode
+export const rubyToAST = (execPath: string, text: string, filePath: string | undefined): AnyTxtNode => {
+  return execTextlintRuby(execPath, text, filePath) as AnyTxtNode
 }
