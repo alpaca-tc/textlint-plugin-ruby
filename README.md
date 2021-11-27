@@ -34,8 +34,9 @@ Put following config to `.textlintrc`
 
 - `extensions`: `string[]`
   - Additional file extensions for markdown
-- `execPath`: `string`
-  - Set [textlint-ruby](https://github.com/alpaca-tc/textlint-ruby) executable path
+- `execCommand`: `string[]`
+  - Default `["textlint-ruby"]`
+  - Set [textlint-ruby](https://github.com/alpaca-tc/textlint-ruby) executable command
 
 For example, if you want to treat custom extensions as ruby, put following config to `.textlintrc`
 
@@ -52,10 +53,20 @@ For example, if you want to treat custom extensions as ruby, put following confi
 For example, if you want to set specific `textlint-ruby` executable path, put following config to `.textlintrc`
 
 ```json
+# Use gem installed with Gemfile.
 {
   "plugins": {
     "ruby": {
-      "execPath": ["./path/to/textlint-ruby"]
+      "execCommand": ["bundle", "exec", "textlint-ruby"]
+    }
+  }
+}
+
+# Use faster command instead of.
+{
+  "plugins": {
+    "ruby": {
+      "execCommand": ["textlint-ruby-optimized"]
     }
   }
 }

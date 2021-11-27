@@ -11,7 +11,7 @@ const die = (error: Error): void => {
   process.exit(1)
 }
 
-const execTextlintRuby = (execPath: string, text: string, filePath: string | undefined): any => {
+const execTextlintRuby = (execCommand: string[], text: string, filePath: string | undefined): any => {
   let path: string;
 
   if (filePath) {
@@ -22,10 +22,13 @@ const execTextlintRuby = (execPath: string, text: string, filePath: string | und
   }
 
   try {
+    const commandArgs = [...execCommand, path]
+    const cmd = commandArgs.shift()
+
     // Parse ruby source code with textlint-ruby
     const spawn = spawnSync(
-      execPath,
-      [path]
+      cmd!,
+      commandArgs
     )
 
     if (spawn.error) {
@@ -43,6 +46,6 @@ const execTextlintRuby = (execPath: string, text: string, filePath: string | und
   }
 }
 
-export const rubyToAST = (execPath: string, text: string, filePath: string | undefined): AnyTxtNode => {
-  return execTextlintRuby(execPath, text, filePath) as AnyTxtNode
+export const rubyToAST = (execCommand: string[], text: string, filePath: string | undefined): AnyTxtNode => {
+  return execTextlintRuby(execCommand, text, filePath) as AnyTxtNode
 }

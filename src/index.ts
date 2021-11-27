@@ -6,11 +6,11 @@ import type {
 import { rubyToAST } from "./rubyToAST";
 
 class Processor implements TextlintPluginProcessor {
-  public execPath: string;
+  public execCommand: string[];
   private extensions: string[];
 
   constructor(options?: TextlintPluginOptions) {
-    this.execPath = options?.execPath ?? 'textlint-ruby'
+    this.execCommand = options?.execCommand ?? ['textlint-ruby']
     this.extensions = options?.extensions ?? [];
   }
 
@@ -23,7 +23,7 @@ class Processor implements TextlintPluginProcessor {
 
     return {
       preProcess(text: string, filePath?: string) {
-        return rubyToAST(self.execPath, text, filePath);
+        return rubyToAST(self.execCommand, text, filePath);
       },
 
       postProcess(messages: any[], filePath?: string) {
