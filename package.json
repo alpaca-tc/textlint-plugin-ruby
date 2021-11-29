@@ -22,7 +22,9 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "ts-test": "tsc --noEmit"
   },
   "devDependencies": {
     "@textlint/ast-node-types": "^12.0.0",

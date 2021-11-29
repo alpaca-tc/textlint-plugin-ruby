@@ -1,0 +1,45 @@
+version: 2.1
+
+executors:
+  node_14:
+    docker:
+      - image: circleci/node:14
+
+  node_16:
+    docker:
+      - image: circleci/node:16
+
+commands:
+  run_test:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - node_modules
+          key: yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: yarn audit --groups dependencies
+      - run: yarn run lint
+      - run: yarn run ts-test
+
+jobs:
+  node_14:
+    executor: node_14
+    steps:
+      - run_test
+
+  node_16:
+    executor: node_16
+    steps:
+      - run_test
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - node_14
+      - node_16
