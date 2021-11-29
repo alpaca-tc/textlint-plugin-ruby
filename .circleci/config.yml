@@ -23,13 +23,20 @@ commands:
             - node_modules
           key: yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
+      - run: |
+          sudo apt-get update -y
+          sudo apt install -yq ruby-full
+          ruby -v
+          sudo gem install textlint-ruby
+
   run_test:
     steps:
       - checkout
       - install_dependencies
       - run: yarn audit --groups dependencies
-      - run: yarn run lint
       - run: yarn run ts-test
+      - run: yarn run lint
+      - run: yarn run test
 
 jobs:
   node_14:
