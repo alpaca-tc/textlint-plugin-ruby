@@ -19,25 +19,37 @@
     "ruby"
   ],
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "test": "mocha \"test/**/*.{js,ts}\"",
     "ts-test": "tsc --noEmit"
   },
   "devDependencies": {
     "@textlint/ast-node-types": "^12.0.0",
+    "@textlint/kernel": "^12.0.2",
     "@textlint/types": "^12.0.2",
+    "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.10",
     "@types/tmp": "^0.2.2",
+    "assert": "^2.0.0",
     "eslint": "^8.3.0",
     "eslint-config-smarthr": "^6.0.0",
+    "mocha": "^9.1.3",
     "prettier": "^2.5.0",
     "prettier-config-smarthr": "^1.0.0",
+    "textlint-rule-no-todo": "^2.0.1",
+    "ts-node": "^10.4.0",
+    "ts-node-test-register": "^10.0.0",
     "typescript": "^4.5.2"
   },
   "dependencies": {
     "tmp": "^0.2.1"
+  },
+  "directories": {
+    "test": "test"
   }
 }
