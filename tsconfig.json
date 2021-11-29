@@ -3,11 +3,13 @@
     "allowSyntheticDefaultImports": true,
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "dist",
+    "declaration": true,
+    "outDir": "lib",
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES5"
-  }
+  },
+  "include": ["src/**/*"]
 }

@@ -1,22 +1,28 @@
 {
   "name": "textlint-plugin-ruby",
+  "description": "Ruby plugin for textlint",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/alpaca-tc/textlint-plugin-ruby.git",
   "author": "alpaca-tc <alpaca-tc@alpaca.tc>",
   "license": "MIT",
+  "types": "lib/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/alpaca-tc/textlint-plugin-ruby/issues"
+  },
+  "engines": {
+    "node": ">= 14.18.1"
+  },
   "keywords": [
     "textlint",
     "textlintplugin",
     "ruby"
   ],
   "files": [
-    "dist",
-    "src"
+    "lib"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "tsc --noEmit"
+    "build": "tsc"
   },
   "devDependencies": {
     "@textlint/types": "^12.0.2",
