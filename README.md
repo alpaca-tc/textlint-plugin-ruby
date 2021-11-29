@@ -4,8 +4,6 @@ Ruby plugin for [textlint](https://github.com/textlint/textlint)
 
 ## Install 
 
-**TODO: release packages**
-
 Install with [npm](https://www.npmjs.com/):
 
 ```sh
