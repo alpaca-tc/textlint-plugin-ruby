@@ -4,15 +4,16 @@ executors:
   node_14:
     docker:
       - image: circleci/node:14
+    working_directory: ~/app
 
   node_16:
     docker:
       - image: circleci/node:16
+    working_directory: ~/app
 
 commands:
-  run_test:
+  install_dependencies:
     steps:
-      - checkout
       - restore_cache:
           keys:
             - yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
@@ -21,6 +22,11 @@ commands:
           paths:
             - node_modules
           key: yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+
+  run_test:
+    steps:
+      - checkout
+      - install_dependencies
       - run: yarn audit --groups dependencies
       - run: yarn run lint
       - run: yarn run ts-test
@@ -36,6 +42,15 @@ jobs:
     steps:
       - run_test
 
+  deploy:
+    executor: node_16
+    steps:
+      - checkout
+      - install_dependencies
+      - run: yarn run build
+      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+      - run: npm publish
+
 workflows:
   version: 2
 
@@ -43,3 +58,12 @@ workflows:
     jobs:
       - node_14
       - node_16
+      - deploy:
+          requires:
+            - node_14
+            - node_16
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+                ignore: /.*/
