@@ -25,7 +25,6 @@ const execTextlintRuby = (
 
   try {
     const commandArgs = [...execCommand, path];
-    console.log(commandArgs);
     const cmd = commandArgs.shift();
 
     // Parse ruby source code with textlint-ruby

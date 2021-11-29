@@ -23,12 +23,6 @@ commands:
             - node_modules
           key: yarn-v1-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
 
-      - run: |
-          sudo apt-get update -y
-          sudo apt install -yq ruby-full
-          ruby -v
-          sudo gem install textlint-ruby
-
   run_test:
     steps:
       - checkout
@@ -36,6 +30,14 @@ commands:
       - run: yarn audit --groups dependencies
       - run: yarn run ts-test
       - run: yarn run lint
+
+  # node14 doesn't work
+  run_test_with_ruby:
+    steps:
+      - run: |
+          sudo apt-get update -y
+          sudo apt install -yq ruby-full
+          sudo gem install textlint-ruby
       - run: yarn run test
 
 jobs:
@@ -48,6 +50,7 @@ jobs:
     executor: node_16
     steps:
       - run_test
+      - run_test_with_ruby
 
   deploy:
     executor: node_16
