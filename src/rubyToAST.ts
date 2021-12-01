@@ -1,41 +1,37 @@
 import type { AnyTxtNode } from "@textlint/ast-node-types";
 
 import { tmpNameSync } from "tmp";
-import { writeFileSync } from "fs";
-import { spawnSync } from "child_process";
+import { writeFile } from "fs";
+import { Client } from "./Client";
+import { promisify } from "util";
 
 const die = (error: Error): void => {
   console.error(error);
   process.exit(1);
 };
 
-const execTextlintRuby = (
-  execCommand: string[],
+const writeFileAsync = promisify(writeFile);
+
+const execTextlintRuby = async (
+  client: Client,
   text: string,
   filePath: string | undefined
-): any => {
+): Promise<any> => {
   let path: string;
 
   if (filePath) {
     path = filePath;
   } else {
     path = tmpNameSync({ postfix: ".rb" }).toString();
-    writeFileSync(path, text);
+    await writeFileAsync(path, text);
   }
 
   try {
-    const commandArgs = [...execCommand, path];
-    const cmd = commandArgs.shift();
-
-    // Parse ruby source code with textlint-ruby
-    const spawn = spawnSync(cmd!, commandArgs);
-
-    if (spawn.error) {
-      die(spawn.error!);
+    if (!(await client.available())) {
+      die(new Error("textlint-ruby is not running"));
+    } else {
+      return await client.parse(path);
     }
-
-    const json = spawn.stdout.toString();
-    return JSON.parse(json) as AnyTxtNode;
   } catch (error) {
     if (error instanceof Error) {
       die(error);
@@ -45,10 +41,10 @@ const execTextlintRuby = (
   }
 };
 
-export const rubyToAST = (
-  execCommand: string[],
+export const rubyToAST = async (
+  client: Client,
   text: string,
   filePath: string | undefined
-): AnyTxtNode => {
-  return execTextlintRuby(execCommand, text, filePath) as AnyTxtNode;
+): Promise<AnyTxtNode> => {
+  return (await execTextlintRuby(client, text, filePath)) as AnyTxtNode;
 };
