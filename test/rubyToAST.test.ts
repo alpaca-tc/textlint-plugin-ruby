@@ -4,15 +4,18 @@ import { readFileSync } from "fs";
 import { rubyToAST } from "../src/rubyToAST";
 import * as assert from "assert";
 import { join } from "path";
+import { Client } from "../src/Client";
 
 describe("rubyToAST", () => {
   context("textlint AST", () => {
-    it("returns true", () => {
+    it("returns true", async () => {
+      const client = new Client();
       const filePath = join(__dirname, "fixtures/test.rb");
       const text = readFileSync(filePath, "utf-8");
-      const AST = rubyToAST(["textlint-ruby"], text, filePath);
+      const AST = await rubyToAST(client, text, filePath);
 
       assert(isTxtAST(AST));
+      client?.enqueueShutdown();
     });
   });
 });

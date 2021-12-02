@@ -25,13 +25,13 @@ export interface Response<T> {
 }
 
 export class Client {
-  private _seq: number = 0;
-  private _process: ChildProcess;
+  public _process: ChildProcess;
+  public _seq: number = 0;
   private _readlineInterface: Interface;
   private _enqueuedShutdown: boolean = false;
   private readonly _requests: { [seq: number]: Deferred<any> } = {};
 
-  constructor(execCommand: string[]) {
+  constructor(execCommand: string[] = ["textlint-ruby", "--stdio"]) {
     this._process = this.bootTextlintRuby(execCommand);
 
     const { stdout, stderr } = this._process;
