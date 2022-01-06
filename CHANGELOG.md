@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Next Version
 
+## [3.0.1]
+
 - #2 Fixed a bug that a lot of textlint-ruby processes were booted when running textlint with --fix option.
 
 ## [3.0.0]
