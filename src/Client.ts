@@ -88,15 +88,15 @@ export class Client {
     this._enqueuedShutdown = true;
 
     this._shutdownPromise = new Promise<void>((resolve) => {
-      const tryToShutdown = (): void => {
+      const tryToShutdown = (wait: number = 0): void => {
         setTimeout(() => {
           if (Object.keys(this._requests).length === 0) {
             this.shutdown();
             resolve();
           } else {
-            tryToShutdown();
+            tryToShutdown(10);
           }
-        }, 0);
+        }, wait);
       };
 
       tryToShutdown();
