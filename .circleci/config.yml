@@ -69,9 +69,6 @@ workflows:
       - node_14
       - node_16
       - deploy:
-          requires:
-            - node_14
-            - node_16
           filters:
             tags:
               only: /^v.*/
