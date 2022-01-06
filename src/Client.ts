@@ -29,6 +29,7 @@ export class Client {
   public _seq: number = 0;
   private _readlineInterface: Interface;
   private _enqueuedShutdown: boolean = false;
+  private _shutdownPromise?: Promise<void>;
   private readonly _requests: { [seq: number]: Deferred<any> } = {};
 
   constructor(execCommand: string[] = ["textlint-ruby", "--stdio"]) {
@@ -79,24 +80,29 @@ export class Client {
     this._process.kill();
   }
 
-  public enqueueShutdown(): void {
+  public enqueueShutdown(): Promise<void> {
     if (this._enqueuedShutdown) {
-      return;
+      return this._shutdownPromise!;
     }
 
     this._enqueuedShutdown = true;
 
-    const tryToShutdown = (): void => {
-      setTimeout(() => {
-        if (Object.keys(this._requests).length === 0) {
-          this.shutdown();
-        } else {
-          tryToShutdown();
-        }
-      }, 0);
-    };
+    this._shutdownPromise = new Promise<void>((resolve) => {
+      const tryToShutdown = (): void => {
+        setTimeout(() => {
+          if (Object.keys(this._requests).length === 0) {
+            this.shutdown();
+            resolve();
+          } else {
+            tryToShutdown();
+          }
+        }, 0);
+      };
 
-    tryToShutdown();
+      tryToShutdown();
+    });
+
+    return this._shutdownPromise;
   }
 
   private get packageVersion(): string {

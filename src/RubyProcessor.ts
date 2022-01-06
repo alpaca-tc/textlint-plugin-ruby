@@ -16,8 +16,9 @@ const clientBuilder = ((): ClientBuilder => {
   return {
     shutdown: () => {
       if (client) {
-        client.enqueueShutdown();
-        client = undefined;
+        client.enqueueShutdown().then(() => {
+          client = undefined;
+        });
       }
     },
 
